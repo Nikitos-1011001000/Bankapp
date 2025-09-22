@@ -2,6 +2,7 @@ def mask_account_card(info):
     """Функция, которая маскирует номер карты и счета."""
 
     from masks import get_mask_card_number
+    
     from masks import get_mask_account
 
 
