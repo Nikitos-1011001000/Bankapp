@@ -1,8 +1,4 @@
-from masks import (get_mask_account,  # импорт функций из другого модуля
-                   get_mask_card_number)
-
-
-def mask_account_card(info: str):
+def mask_account_card(info):
     """Функция, которая маскирует номер карты и счета."""
     parts = info.split()
 
@@ -12,15 +8,14 @@ def mask_account_card(info: str):
 
     if type_name.lower().startswith('счет'):
 
-        masked_number = get_mask_account(info)
-
+        masked_number = '*' * (len(number) - 4) + number[-4:]
     else:
-        masked_number = get_mask_card_number(info)
+
+        masked_number = number[:6] + '*' * (len(number) - 10) + number[-4:]
 
     return f"{type_name} {masked_number}"
 
-
-def get_date(date_str: str):
+def get_date(date_str):
     """Функция для замены даты"""
     date_part = date_str.split('T')[0]
 
