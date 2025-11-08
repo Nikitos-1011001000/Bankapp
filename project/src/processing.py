@@ -1,6 +1,5 @@
 def filter_by_state(records: list[dict[str, int]], state="EXECUTED"):
     """ Фильтрует список словарей по значению ключа 'state'. """
-
     return [record for record in records if record.get("state") == state]
 
 
