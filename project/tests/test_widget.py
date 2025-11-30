@@ -17,12 +17,6 @@ from bankapp.widget import get_date
 def example_numbers(request):
     return request.param
 
-
-@pytest.mark.parametrize("input_number, expected_output, expect_error", [
-    ("1234", "****", False),
-    ("5678", "****", False),
-    ("abcd", None, True),
-])
 def test_mask_account_card(input_number, expected_output, expect_error, request):
     # example_data = request.getfixturevalue("example_numbers")
 
@@ -34,24 +28,25 @@ def test_mask_account_card(input_number, expected_output, expect_error, request)
 
 
 @pytest.fixture(params=[
-    ("2024-12-31", datetime(2024, 12, 31).date()),  # ISO формат
-    ("31.12.2024", datetime(2024, 12, 31).date()),  # Европейский формат с точками
+    ("2024-12-31", datetime.datetime(2024, 12, 31).date()),  # ISO формат
+    ("31.12.2024", datetime.datetime(2024, 12, 31).date()),  # Европейский формат с точками
     # Американский формат с косой чертой
-    ("12/31/2024", datetime(2024, 12, 31).date()),
+    ("12/31/2024", datetime.datetime(2024, 12, 31).date()),
     ("2024/12/31", None),  # Нестандартный формат
     ("", None),  # Пустая строка
     (None, None),  # None вместо строки
     ("random string", None),])
-def test_get_date(example_dates):
-    input_str, expected_date = example_dates
+
+def test_get_date(dates):
+    input_str, expected_date = dates
     assert get_date(input_str) == expected_date
 
 
 @pytest.fixture(params=[
-    ("2024-12-31", datetime(2024, 12, 31).date()),     # ISO формат
-    ("31.12.2024", datetime(2024, 12, 31).date()),     # Европейский формат с точками
+    ("2024-12-31", datetime.datetime(2024, 12, 31).date()),     # ISO формат
+    ("31.12.2024", datetime.datetime(2024, 12, 31).date()),     # Европейский формат с точками
     # Американский формат с косой чертой
-    ("12/31/2024", datetime(2024, 12, 31).date()),
+    ("12/31/2024", datetime.datetime(2024, 12, 31).date()),
     ("2024/12/31", None),                              # Нестандартный формат
     ("", None),                                        # Пустая строка
     (None, None),                                      # None вместо строки
