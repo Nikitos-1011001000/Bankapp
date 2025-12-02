@@ -54,7 +54,7 @@ def valid_card_numbers():
     ]
 
 def test_get_mask_card_number_valid(valid_card_numbers):
-        for card, expected in valid_card_numbers:
+    for card, expected in valid_card_numbers:
         assert get_mask_card_number(card) == expected
 
 @pytest.fixture
@@ -63,6 +63,11 @@ def invalid_card_numbers():
         ("abcd-efgh-ijkl-mnop", ""),
         ("9999999999999999", ""),
     ]
+
+def test_get_mask_card_number_invalid(request):
+    invalid_cards = request.getfixturevalue("invalid_card_numbers")
+    for card in invalid_cards:
+        assert get_mask_card_number(card) == ""
 
 @pytest.mark.parametrize("fixture_name", ["invalid_card_numbers"])
 def test_get_mask_card_number_invalid(request):
