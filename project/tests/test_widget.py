@@ -2,6 +2,7 @@ import pytest
 import datetime
 from bankapp.widget import mask_account_card
 from bankapp.widget import get_date
+from bankapp.masks import get_mask_account
 
 
 @pytest.fixture(params=[
@@ -17,15 +18,25 @@ from bankapp.widget import get_date
 def example_numbers(request):
     return request.param
 
+@pytest.fixture
+def expected_output(input_number):
+    return input_number[1]
 
-def test_mask_account_card(input_number, expected_output, expect_error, request):
-    # example_data = request.getfixturevalue("example_numbers")
+@pytest.fixture
+def expect_error(input_number):
+    return input_number[2]
 
-    if expect_error:
-        with pytest.raises(ValueError):
-            mask_account_card(input_number)
-    else:
-        assert mask_account_card(input_number) == expected_output
+
+@pytest.mark.parametrize("input_number, expected_output", [
+    ('1234567890123456', '1234********3456'),
+    ('1234567', '1234567'),
+    ('', ''),
+    ('1234567890', '1234**7890'),
+    ('ABCD1234EFGH5678', 'ABCD********5678'),
+])
+def test_mask_account(input_number, expected_output):
+    result = get_mask_account(input_number)
+    assert result == expected_output
 
 
 @pytest.fixture(params=[

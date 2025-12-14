@@ -4,22 +4,11 @@ import datetime
 
 
 def mask_account_card(info: str):
-    """Функция, которая маскирует номер карты и счета."""
-    digits = ''.join(re.findall(r'\d', info))
-    parts = info.split()
-
-    number = parts[-1]
-
-    type_name = ' '.join(parts[:-1])
-
-    if type_name.lower().startswith('счет'):
-
-        masked_number = get_mask_account(digits)
-
-    else:
-        masked_number = get_mask_card_number(digits)
-
-    return f"{type_name} {masked_number}"
+    card_number = str(card_number)
+    if len(card_number) < 8:
+        return card_number
+    masked_length = len(card_number) - 8
+    return card_number[:4] + '*' * masked_length + card_number[-4:]
 
 
 def get_date(date_str: str):

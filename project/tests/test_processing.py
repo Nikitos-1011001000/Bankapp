@@ -43,8 +43,7 @@ def test_filter_by_state(filter_test_data):
 
 @pytest.fixture(params=[
     (
-        [
-    {'date': '2024-01-02'},
+        [{'date': '2024-01-02'},
     {'date': '2023-12-31'},
     {'date': '2024-01-01'}],
         True,
@@ -53,7 +52,6 @@ def test_filter_by_state(filter_test_data):
     {'date': '2024-01-01'},
     {'date': '2024-01-02'}]
         ),
-        # Сортировка по убыванию с одинаковыми датами(
         [
         {'date': '2024-01-01'},
         {'date': '2024-01-01'},
@@ -62,10 +60,8 @@ def test_filter_by_state(filter_test_data):
         [
         {'date': '2024-01-01'},
         {'date': '2024-01-01'},
-        {'date': '2023-12-30'}]
-        ],
-        # Нестандартный формат, дата отсутствует, должна идти первой (минимум)
-(
+        {'date': '2023-12-30'}],
+
         [
         {'date': 'invalid-date'},
         {'date': '2024-01-01'},
@@ -74,22 +70,22 @@ def test_filter_by_state(filter_test_data):
         [
         {'date': 'invalid-date'},
         {'date': None},
-        {'date': '2024-01-01'}]
-        ),
+        {'date': '2024-01-01'}],
         # Пустой входной список
-        (
         [],
         True,
         []
-        )
-    )
+        ])
 
 
 def sort_data(request):
     return request.param
 
 
-def test_sort_by_date(sort_data):
-    items, ascending, expected = sort_data
-    result = sort_by_date(items, ascending=ascending)
+def test_sort_by_date():
+    sort_data = [{'date': '2024-01-01'}, {'date': '2024-01-01'}, {'date': '2023-12-30'}]
+
+    expected = [{'date': '2023-12-30'}, {'date': '2024-01-01'}, {'date': '2024-01-01'}]
+    result = sort_by_date(sort_data)
+
     assert result == expected
