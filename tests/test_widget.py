@@ -1,7 +1,9 @@
-import pytest
 import datetime
-from bankapp.widget import get_date
-from bankapp.masks import get_mask_account
+
+import pytest
+
+from src.bankapp.masks import get_mask_account
+from src.bankapp.widget import get_date
 
 
 @pytest.fixture(

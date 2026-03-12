@@ -1,7 +1,6 @@
 import pytest
 
-from bankapp.processing import filter_by_state
-from bankapp.processing import sort_by_date
+from src.bankapp.processing import filter_by_state, sort_by_date
 
 
 @pytest.fixture(

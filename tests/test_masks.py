@@ -1,7 +1,6 @@
 import pytest
 
-from bankapp.masks import get_mask_card_number
-from bankapp.masks import get_mask_account
+from src.bankapp.masks import get_mask_account, get_mask_card_number
 
 
 @pytest.fixture

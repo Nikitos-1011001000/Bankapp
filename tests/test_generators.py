@@ -1,7 +1,6 @@
-from bankapp.generators import filter_by_currency
-from bankapp.generators import card_number_generator
-from bankapp.generators import transaction_descriptions
-import pytest
+import pytest  # noqa:
+
+from src.bankapp.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
 
 # Тесты для filter_by_currency
