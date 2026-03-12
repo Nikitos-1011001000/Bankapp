@@ -1,0 +1,16 @@
+# Byte-compiled / C extensions
+__pycache__/
+*.py[cod]
+*$py.class
+# IDE
+.idea/
+.vscode/
+# Env
+venv/
+env/
+.env
+# Tests/Tools
+.pytest_cache/
+pytest_cache/
+ruff_cache/
+htmlcov/
