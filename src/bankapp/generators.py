@@ -14,7 +14,7 @@ def card_number_generator(start: str, end: str) -> Iterator[str]:
         # Преобразуем число обратно в строку с ведущими нулями до 16 цифр
         num_str = f"{num:016d}"
         # Форматируем строку как 'XXXX XXXX XXXX XXXX'
-        formatted = " ".join(num_str[i:i + 4] for i in range(0, 16, 4))
+        formatted = " ".join(num_str[i : i + 4] for i in range(0, 16, 4))
         yield formatted
 
 

@@ -14,3 +14,5 @@ env/
 pytest_cache/
 ruff_cache/
 htmlcov/
+htmlcov/
+*.htmlcov
