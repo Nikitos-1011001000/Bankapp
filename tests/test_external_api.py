@@ -1,10 +1,8 @@
-import os
 import unittest
-from typing import Any, Dict, List
+from typing import Any, Dict
 from unittest.mock import MagicMock, Mock, patch
 
-from external_api import _get_exchange_rate
-from external_api import get_rub_amount
+from bankapp.external_api import get_rub_amount
 
 
 class TestCurrencyConverter(unittest.TestCase):

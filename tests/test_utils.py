@@ -1,8 +1,7 @@
 import json
-import os
 import unittest
 from typing import Any, Dict, List
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open, patch
 
 from utils import load_transactions
 
@@ -43,7 +42,7 @@ class TestLoadTransactions(unittest.TestCase):
 
     def test_invalid_json_not_list(self) -> None:
         """JSON не список (например, объект {})."""
-        invalid_data = {"transactions": []}
+        invalid_data: dict[str, list[dict]] = {"transactions": []}
 
         with patch("utils.os.path.exists") as mock_exists, patch(
             "builtins.open", new_callable=mock_open, read_data=json.dumps(invalid_data)

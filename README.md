@@ -9,6 +9,7 @@
 * По запросу может возвращать итератор, который поочередно выдает транзакции, где валюта операции соответствует заданной (например, USD).
 * Принимает список словарей с транзакциями и возвращает описание каждой операции по очереди.
 * Содержит генератор, который может сгенерировать номера карт в заданном диапазоне от 0000 0000 0000 0001 до 9999 9999 9999 9999.
+* Парсинг, конвертация валют.
 
 ## Содержание
 - [Инструкции по установке](#инструкции по установке)
@@ -90,6 +91,19 @@ def test_transaction_descriptions_missing_keys:
 
 def test_transaction_descriptions_empty:
 Пустой список транзакций
+
+def test_rub_amount: неверно указана сумма	
+def test_no_api_key: API
+def test_usd_to_rub_success: конвертация валют
+def test_api_error: API
+def test_template_key: API
+def test_file_not_exists(self): файл со словарями не существует
+def test_valid_json_file(self): валидный JSON файл
+def test_empty_json_array(self): пустой JSON массив [].
+def test_invalid_json_not_list(self): JSON не список (например, объект {}).
+def test_json_decode_error(self): Некорректный JSON.
+def test_permission_error(self): Ошибка при открытии файла.
+def test_complex_valid_data(self): Сложные данные — проверяем обработку.
 
 ## Команда проекта
 Автор: Никита Рукин © 2025 antilsound1@gmail.com

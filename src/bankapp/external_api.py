@@ -1,11 +1,12 @@
+import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent))
-import os
 from typing import Any, Dict, Optional
-from utils.transactions import load_transactions
+
 import requests
 from dotenv import load_dotenv
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 load_dotenv()
 
@@ -69,20 +70,19 @@ if __name__ == "__main__":
     transactions: list[Dict[str, Any]] = load_transactions()[:5]  # type: ignore[untyped-call]
 
     if not transactions:
-        print("❌ data/operations.json не найден или пуст!")
-        return
+        print("data/operations.json не найден или пуст!")
 
-    print("\nРезультаты конвертации:")
-    print("-" * 50)
+print("\nРезультаты конвертации:")
+print("-" * 50)
 
-    for tx in transactions:
-        rub_amount: float = get_rub_amount(tx)
-        tx_id: Any = tx.get("id", "N/A")
-        currency_info: Dict[str, Any] = tx.get("operationAmount", {})
-        currency: Dict[str, Any] = currency_info.get("currency", {})
-        currency_code: str = currency.get("code", "N/A")
+for tx in transactions:
+    rub_amount: float = get_rub_amount(tx)
+    tx_id: Any = tx.get("id", "N/A")
+    currency_info: Dict[str, Any] = tx.get("operationAmount", {})
+    currency: Dict[str, Any] = currency_info.get("currency", {})
+    currency_code: str = currency.get("code", "N/A")
 
-        print(f"ID {tx_id:<6} | {rub_amount:>12.2f} ₽ | {currency_code:>3}")
+    print(f"ID {tx_id:<6} | {rub_amount:>12.2f} ₽ | {currency_code:>3}")
 
     print("-" * 50)
     print("Конвертация завершена!")
