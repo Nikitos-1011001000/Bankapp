@@ -1,9 +1,13 @@
+import os
+import sys
 import json
 import unittest
 from typing import Any, Dict, List
 from unittest.mock import mock_open, patch
+from bankapp.utils import load_transactions
 
-from utils import load_transactions
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 
 class TestLoadTransactions(unittest.TestCase):

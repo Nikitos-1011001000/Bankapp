@@ -21,8 +21,7 @@ def get_mask_account(account_number: str) -> str:
     digits = account_number.replace(" ", "")
 
     if len(digits) < 8:
-        masks_logger.error("❌ Счет невалиден: <8 символов")
-        return ""
+        return digits
 
     masked = digits[:4] + "*" * (len(digits) - 8) + digits[-4:]
     masks_logger.info(f"✅ Счет замаскирован: {masked}")

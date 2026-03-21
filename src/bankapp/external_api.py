@@ -1,9 +1,8 @@
 import os
 import sys
+import requests
 from pathlib import Path
 from typing import Any, Dict, Optional
-
-import requests
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -34,9 +33,11 @@ def get_rub_amount(transaction: Dict[str, Any]) -> float:
     if currency_code == "RUB":
         return amount
 
-    # Конвертируем
     rate: Optional[float] = _get_exchange_rate(currency_code)
-    return amount * rate if rate is not None else amount
+    if rate is not None:  # ✅ ПРОВЕРКА!
+        return amount * rate
+
+    return amount  # ✅ FALLBACK!
 
 
 def _get_exchange_rate(currency: str) -> Optional[float]:
@@ -57,14 +58,15 @@ def _get_exchange_rate(currency: str) -> Optional[float]:
         data: Dict[str, Any] = response.json()
         rub_rate: Optional[float] = data["rates"].get("RUB")
         return rub_rate
-    except (requests.RequestException, KeyError, ValueError) as e:
+    except (requests.RequestException, KeyError, ValueError, Exception) as e:  # ✅ ДОБАВЬ Exception!
         print(f"Ошибка API: {e}")
-        return None
+        return None  # ✅ return None!
 
 
 if __name__ == "__main__":
     """Демо: python -m utils.currency → тест конвертации API"""
-    from utils.transactions import load_transactions  # type: ignore[import-untyped]
+    from bankapp.utils import \
+        load_transactions  # type: ignore[import-untyped]
 
     print("Тестируем конвертацию валют...")
     transactions: list[Dict[str, Any]] = load_transactions()[:5]  # type: ignore[untyped-call]
@@ -74,15 +76,3 @@ if __name__ == "__main__":
 
 print("\nРезультаты конвертации:")
 print("-" * 50)
-
-for tx in transactions:
-    rub_amount: float = get_rub_amount(tx)
-    tx_id: Any = tx.get("id", "N/A")
-    currency_info: Dict[str, Any] = tx.get("operationAmount", {})
-    currency: Dict[str, Any] = currency_info.get("currency", {})
-    currency_code: str = currency.get("code", "N/A")
-
-    print(f"ID {tx_id:<6} | {rub_amount:>12.2f} ₽ | {currency_code:>3}")
-
-    print("-" * 50)
-    print("Конвертация завершена!")

@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 
 import pytest
 
@@ -18,7 +19,7 @@ from src.bankapp.widget import get_date
         ("", "", False),  # пустая строка
     ]
 )
-def example_numbers(request):
+def example_numbers(request) -> Any:
     return request.param
 
 

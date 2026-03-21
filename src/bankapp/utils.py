@@ -1,10 +1,11 @@
 import json
 import os
 from typing import Any, Dict, List
-from .utils_logger import utils_logger
+
+from bankapp.utils_logger import utils_logger
 
 
-def load_transactions() -> List[Dict[str, Any]]:
+def load_transactions(filename: str = "data/transactions.csv") -> list[dict]:
     """
     Загружает транзакции ИЗ data/operations.json.
     Returns:
