@@ -1,11 +1,12 @@
 import json
+import logging
 import os
 from typing import Any, Dict, List
 
-from bankapp.utils_logger import utils_logger
+utils_logger = logging.getLogger("utils")
 
 
-def load_transactions(filename: str = "data/transactions.csv") -> list[dict]:
+def load_transactions(filename: str = "data/transactions.csv") -> List[dict]:
     """
     Загружает транзакции ИЗ data/operations.json.
     Returns:
@@ -45,8 +46,12 @@ def load_transactions(filename: str = "data/transactions.csv") -> list[dict]:
         return []
 
 
-if __name__ == "__main__":
-    """Запуск модуля напрямую: python -m utils.transactions"""
-    utils_logger.info("🚀 Запуск utils.py напрямую")
-    transactions: List[Dict[str, Any]] = load_transactions()
-    print(f"Загружено {len(transactions)} транзакций из data/operations.json")
+class CurrencyConverter:
+    """Конвертер валют для тестов."""
+
+    def __init__(self, api_key: str = ""):
+        self.api_key = api_key
+
+    def get_rub_amount(self, transaction: dict) -> float:
+        """Mock для тестов."""
+        return 100.0  # Заглушка

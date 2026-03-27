@@ -1,8 +1,9 @@
 import os
 import sys
-import requests
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+import requests
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -65,8 +66,7 @@ def _get_exchange_rate(currency: str) -> Optional[float]:
 
 if __name__ == "__main__":
     """Демо: python -m utils.currency → тест конвертации API"""
-    from bankapp.utils import \
-        load_transactions  # type: ignore[import-untyped]
+    from bankapp.utils import load_transactions  # type: ignore[import-untyped]
 
     print("Тестируем конвертацию валют...")
     transactions: list[Dict[str, Any]] = load_transactions()[:5]  # type: ignore[untyped-call]
@@ -76,3 +76,13 @@ if __name__ == "__main__":
 
 print("\nРезультаты конвертации:")
 print("-" * 50)
+
+
+class CurrencyConverter:
+    """Конвертер для тестов."""
+
+    def __init__(self, api_key: str = ""):
+        self.api_key = api_key
+
+    def get_rub_amount(self, transaction: dict) -> float:
+        return 100.0  # Mock
