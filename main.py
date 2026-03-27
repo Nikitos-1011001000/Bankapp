@@ -3,10 +3,11 @@
 import csv
 import logging
 from typing import Any, Dict, List, Optional
-from openpyxl.worksheet.worksheet import Worksheet
-import openpyxl
 
-from src.bankapp.processing import sort_by_date, process_bank_search
+import openpyxl
+from openpyxl.worksheet.worksheet import Worksheet
+
+from src.bankapp.processing import process_bank_search, sort_by_date
 from src.bankapp.utils import load_transactions
 from src.bankapp.widget import get_date, mask_account_card
 

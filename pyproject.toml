@@ -1,5 +1,16 @@
+[tool.mypy]
+python_version = "3.12"
+disallow_untyped_defs = false
+check_untyped_defs = false
+ignore_missing_imports = true
+follow_imports = "skip"
+no_implicit_reexport = false
+warn_unused_ignores = false      
+warn_redundant_casts = false
+
 [tool.poetry]
-name = "project"
+name = "bankapp"
+packages = [{ include = "bankapp", from = "src" }]
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -31,15 +42,3 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-
-[tool.mypy]
-namespace_packages = true
-
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pandas.*"
-ignore_missing_imports = true

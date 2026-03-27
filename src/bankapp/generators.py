@@ -1,4 +1,4 @@
-from typing import Dict, Iterator, List, Any
+from typing import Any, Dict, Iterator, List
 
 
 def filter_by_currency(transactions: List[Dict[str, Any]], currency: str) -> Iterator[Dict[str, Any]]:
@@ -31,5 +31,5 @@ def get_last_transactions(transactions: List[Dict[str, Any]], count: int = 5) ->
     """Получить последние N транзакций."""
     return transactions[-count:] if transactions else []
 
-__all__ = ['card_number_generator', 'filter_by_currency', 'transaction_descriptions', 'get_last_transactions']
 
+__all__ = ['card_number_generator', 'filter_by_currency', 'transaction_descriptions', 'get_last_transactions']
