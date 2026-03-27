@@ -1,23 +1,12 @@
 import csv
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 import pandas as pd
 
 
 def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
-    """
-        Читает транзакции из CSV файла с обработкой ошибок.
-
-        Args:
-            file_path: Путь к CSV файлу (например, "data/transactions.csv")
-
-        Returns:
-            Список словарей с транзакциями. Пустой список при ошибках.
-
-        Raises:
-            Ничего не вызывает исключений - возвращает [] при любых ошибках.
-        """
+    """Читает транзакции из CSV файла с обработкой ошибок."""
     transactions: List[Dict[str, Any]] = []
     try:
         path: Path = Path(file_path)
@@ -28,7 +17,7 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
         with open(file_path, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                transactions.append(row)
+                transactions.append(row)  # CSV всегда Dict[str, str]
 
     except FileNotFoundError:
         print(f"❌ CSV файл не найден: {file_path}")
@@ -43,11 +32,7 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
 
 
 def read_excel_transactions(file_path: str) -> List[Dict[str, Any]]:
-    """
-        Читает транзакции из Excel файла (.xlsx, .xls) с обработкой ошибок.
-        Notes:
-            Требует `openpyxl` или `xlrd` для чтения Excel файлов.
-        """
+    """Читает транзакции из Excel файла (.xlsx, .xls) с обработкой ошибок."""
     try:
         path: Path = Path(file_path)
         if not path.exists():
@@ -55,15 +40,16 @@ def read_excel_transactions(file_path: str) -> List[Dict[str, Any]]:
             return []
 
         df = pd.read_excel(file_path)
-        return df.to_dict('records')
+        # 🔥 ФИКС: cast решает проблему типов pandas
+        return cast(List[Dict[str, Any]], df.to_dict('records'))
 
     except FileNotFoundError:
-        print("❌ Excel файл не найден: {file_path}")
+        print(f"❌ Excel файл не найден: {file_path}")  # ✅ f-string
     except pd.errors.EmptyDataError:
         print("❌ Пустой Excel файл")
-    except ValueError as e:
-        print("❌ Excel ошибка: {e}")
-    except Exception as e:
-        print("❌ Неожиданная ошибка Excel: {e}")
+    except ValueError as e:  # ✅ as e
+        print(f"❌ Excel ошибка: {e}")
+    except Exception as e:  # ✅ as e
+        print(f"❌ Неожиданная ошибка Excel: {e}")
 
     return []

@@ -1,10 +1,14 @@
 import datetime
+import os
+import sys
 from typing import Any
 
 import pytest
 
 from src.bankapp.masks import get_mask_account
 from src.bankapp.widget import get_date
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 @pytest.fixture(
@@ -79,3 +83,16 @@ def test_get_date(dates):
 )
 def example_dates(request):
     return request.param
+
+
+def test_mask_account_edge_cases():
+    """Дополнительные edge-кейсы для widget."""
+    from src.bankapp.masks import get_mask_account
+    assert get_mask_account("123") == "123"  # ✅ короткие как есть
+    assert get_mask_account("") == ""
+
+
+def test_mask_account_card_full():
+    """Полное покрытие widget.py."""
+    from src.bankapp.widget import mask_account_card
+    assert mask_account_card("2848284828482848") == "2848********2848"

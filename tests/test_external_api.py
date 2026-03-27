@@ -3,7 +3,8 @@ import sys
 import unittest
 from typing import Any, Dict
 from unittest.mock import MagicMock, Mock, patch
-from bankapp.external_api import get_rub_amount
+
+from src.bankapp.external_api import get_rub_amount
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 

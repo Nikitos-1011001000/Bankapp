@@ -1,7 +1,10 @@
-import pytest  # noqa:
+import os  # noqa:
+import sys
 
 from src.bankapp.generators import (card_number_generator, filter_by_currency,
                                     transaction_descriptions)
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Тесты для filter_by_currency

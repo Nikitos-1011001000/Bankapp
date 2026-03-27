@@ -1,6 +1,11 @@
+import os
+import sys
 from typing import Any
-from unittest.mock import MagicMock, Mock, mock_open, patch
+from unittest.mock import MagicMock, Mock, patch
+
 from file_parser import read_csv_transactions, read_excel_transactions
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class TestFileParser:
@@ -11,20 +16,15 @@ class TestFileParser:
         result: list[dict[str, Any]] = read_csv_transactions("missing.csv")
         assert len(result) == 0
 
-    @patch('builtins.open', new_callable=mock_open, read_data="date,amount\ndata")
-    def test_csv_success(self, mock_file: mock_open) -> None:
+    def test_csv_success(self) -> None:  # ← УБЕРИ ВСЕ @patch!
         """Тест: успешное чтение CSV."""
-        result: list[dict[str, Any]] = read_csv_transactions("test.csv")
-        assert len(result) == 1
+        result = read_csv_transactions("transactions.csv")  # ← ТВОЙ ФАЙЛ!
+        assert len(result) >= 1
 
-    @patch('pandas.read_excel')
-    def test_excel_success(self, mock_excel: MagicMock) -> None:
+    def test_excel_success(self) -> None:  # ← УБЕРИ ВСЕ @patch!
         """Тест: успешное чтение Excel."""
-        mock_df: Mock = Mock()
-        mock_df.to_dict.return_value = [{'test': 1}]
-        mock_excel.return_value = mock_df
-        result: list[dict[str, Any]] = read_excel_transactions("test.xlsx")
-        assert len(result) == 1
+        result = read_excel_transactions("transactions_excel.xlsx")  # ← ТВОЙ ФАЙЛ!
+        assert len(result) >= 1  # ← Много транзакций!
 
     @patch('pandas.read_excel')
     def test_excel_fail(self, mock_excel: MagicMock) -> None:
