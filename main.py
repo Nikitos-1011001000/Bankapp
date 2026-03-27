@@ -17,7 +17,7 @@ def load_csv(path: str) -> List[Dict[str, Any]]:
     data: List[Dict[str, Any]] = []
     try:
         with open(path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
+            reader = csv.DictReader(f, delimiter=';')
             for row in reader:
                 data.append(dict(row))  # type: ignore
         return data
@@ -147,28 +147,35 @@ def print_transactions(transactions: List[Dict[str, Any]]) -> None:
 
 
 def main() -> None:
-    """Главная логика."""
+    """Главная логика программы."""
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
     print("Выберите необходимый пункт меню:")
     print("1. Получить информацию о транзакциях из JSON-файла")
     print("2. Получить информацию о транзакциях из CSV-файла")
     print("3. Получить информацию о транзакциях из XLSX-файла")
 
-    choice = input().strip()
+    choice = input("Введите номер пункта (1-3): ").strip()
 
     # 1️⃣ Загрузка данных
     transactions: List[Dict[str, Any]] = []
     if choice == "1":
-        print("Для обработки выбран JSON-файл.")
+        json_path = "data/operations.json"
+        print(f"Для обработки выбран JSON-файл: {json_path}")
         transactions = load_transactions()
     elif choice == "2":
-        print("Для обработки выбран CSV-файл.")
-        transactions = load_csv("data/transactions.csv")
+        csv_path = "transactions.csv"
+        print(f"Для обработки выбран CSV-файл: {csv_path}")
+        transactions = load_csv(csv_path)
     elif choice == "3":
-        print("Для обработки выбран XLSX-файл.")
-        transactions = load_xlsx("data/transactions_excel.xlsx")
+        xlsx_path = "transactions_excel.xlsx"
+        print(f"Для обработки выбран XLSX-файл: {xlsx_path}")
+        transactions = load_xlsx(xlsx_path)
     else:
         print("Неверный выбор!")
+        return
+
+    if not transactions:
+        print("Не удалось загрузить данные из файла. Завершение работы.")
         return
 
     # 2️⃣ Фильтр по статусу
@@ -176,14 +183,14 @@ def main() -> None:
     filtered: List[Dict[str, Any]] = [
         tx for tx in transactions if tx.get('state', '').upper() == status
     ]
-    print(f'Операции отфильтрованы по статусу "{status}"')
+    print(f'Операции отфильтрованы по статусу "{status}" ({len(filtered)} найдено)')
 
     # 3️⃣ Пошаговая фильтрация
     result = get_date_sorting(filtered)
     result = get_rub_filter(result)
     result = get_search_filter(result)
 
-    # 4️⃣ Вывод
+    # 4️⃣ Вывод результатов
     print_transactions(result)
 
 

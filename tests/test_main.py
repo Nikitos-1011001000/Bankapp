@@ -95,7 +95,7 @@ def test_print_transactions_nonempty(capfd, sample_transactions):
 # ✅ Тесты загрузчиков
 def test_load_csv(mocker):
     """Mock CSV загрузка."""
-    mock_open = mocker.mock_open(read_data='id,state,description\n1,EXECUTED,test')
+    mock_open = mocker.mock_open(read_data='id;state;description\n650703;EXECUTED;Перевод')
     mocker.patch('builtins.open', mock_open)
 
     result = main.load_csv("fake.csv")
