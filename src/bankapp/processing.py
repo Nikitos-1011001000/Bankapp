@@ -12,12 +12,20 @@ def filter_by_state(
 
 
 def sort_by_date(
-    records: List[Dict[str, str]], descending: bool = False  # ← str значения!
-) -> List[Dict[str, str]]:  # ← Возвращает тот же тип!
+        records: List[Dict[str, str]], descending: bool = False
+) -> List[Dict[str, str]]:
     def get_date(record: Dict[str, str]) -> datetime:
         date_str = record.get("date", "")
-        if 'T' in date_str:
+
+        # ✅ Z формат (UTC без микросекунд)
+        if date_str.endswith('Z'):
+            return datetime.strptime(date_str[:-1], "%Y-%m-%dT%H:%M:%S")
+
+        # ✅ Полный ISO с микросекундами
+        if '.' in date_str:
             return datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%f")
+
+        # ✅ Простая дата
         return datetime.strptime(date_str, "%Y-%m-%d")
 
     """Сортирует по дате."""

@@ -5,6 +5,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 import openpyxl
+import pandas as pd
 from openpyxl.worksheet.worksheet import Worksheet
 
 from src.bankapp.processing import process_bank_search, sort_by_date
@@ -13,56 +14,62 @@ from src.bankapp.widget import get_date, mask_account_card
 
 
 def load_csv(path: str) -> List[Dict[str, Any]]:
-    """Загрузка CSV."""
+    """Загрузка CSV в JSON формат."""
     data: List[Dict[str, Any]] = []
     try:
         with open(path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
-                data.append(dict(row))  # type: ignore
+                operation = {
+                    "id": row.get("id", ""),
+                    "state": row.get("state", ""),
+                    "date": row.get("date", ""),
+                    "operationAmount": {
+                        "amount": row.get("amount", "0"),  # ✅ amount!
+                        "currency": {
+                            "name": row.get("currency_name", "руб."),
+                            "code": row.get("currency_code", "810")  # ✅ currency_code!
+                        }
+                    },
+                    "description": row.get("description", ""),
+                    "from": row.get("from", ""),
+                    "to": row.get("to", "")
+                }
+                data.append(operation)
+        # print(f"=== CSV DEBUG: Загружено {len(data)} операций ===") #
         return data
-    except FileNotFoundError:
-        logging.error(f"CSV файл не найден: {path}")
-        return []
     except Exception as e:
-        logging.error(f"Ошибка чтения CSV {path}: {e}")
+        logging.error(f"Ошибка CSV {path}: {e}")
         return []
 
 
 def load_xlsx(path: str) -> List[Dict[str, Any]]:
     """Загрузка XLSX."""
-    data: List[Dict[str, Any]] = []
     try:
-        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-        ws: Optional[Worksheet] = wb.active
+        df = pd.read_excel(path, engine='openpyxl')
+        data = df.to_dict('records')
 
-        if ws is None:
-            logging.error(f"Нет активного листа в {path}")
-            return []
-
-        # Безопасное чтение заголовков
-        headers: List[str] = []
-        for idx, cell in enumerate(ws[1], 1):
-            header_value = cell.value
-            headers.append(str(header_value) if header_value is not None else f"col_{idx}")
-
-        # Чтение данных
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            if all(v is None for v in row):  # Пропуск пустых строк
-                continue
-            row_dict: Dict[str, Any] = {}
-            for i, value in enumerate(row):
-                header = headers[i] if i < len(headers) else f"col_{i + 1}"
-                row_dict[header] = value
-            data.append(row_dict)
-
-        return data
-
-    except FileNotFoundError:
-        logging.error(f"XLSX файл не найден: {path}")
-        return []
+        normalized = []
+        for row in data:
+            operation = {
+                "id": str(row.get("id", "")),
+                "state": row.get("state", ""),
+                "date": row.get("date", ""),
+                "operationAmount": {  # ✅ НОРМАЛИЗАЦИЯ!
+                    "amount": str(row.get("amount", "0")),
+                    "currency": {
+                        "name": row.get("currency_name", "Ruble"),
+                        "code": row.get("currency_code", "RUB")  # ✅ RUB!
+                    }
+                },
+                "description": row.get("description", ""),
+                "from": row.get("from", ""),
+                "to": row.get("to", "")
+            }
+            normalized.append(operation)
+        return normalized
     except Exception as e:
-        logging.error(f"Ошибка чтения XLSX {path}: {e}")
+        logging.error(f"Ошибка XLSX {path}: {e}")
         return []
 
 
@@ -84,10 +91,10 @@ def get_date_sorting(filtered: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     sort_choice = input("Отсортировать операции по дате? Да/Нет: ").lower()
 
     if sort_choice in ['да', 'yes', 'y', 'д']:
-        direction = input("Отсортировать по возрастанию или по убыванию? ").lower()
-        descending = direction in ['по убыванию', 'убыванию', 'desc', 'd']
+        direction = input("Отсортировать по возрастанию или по убыванию? ").strip().lower()
+        descending = "убыванию" in direction  # ← ИЗМЕНИЛ ТУТ!
         print(f"Операции отсортированы {'по убыванию' if descending else 'по возрастанию'}")
-        return sort_by_date(filtered, descending)  # type: ignore
+        return sort_by_date(filtered, descending)
     return filtered
 
 
@@ -101,7 +108,7 @@ def get_rub_filter(transactions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             operation_amount = tx.get('operationAmount', {})
             currency = operation_amount.get('currency', {})
             code = currency.get('code', '')
-            if code == 'RUB':
+            if code in ['RUB', '810']:
                 rub_transactions.append(tx)
         print("Показаны только рублевые транзакции")
         return rub_transactions
@@ -181,7 +188,7 @@ def main() -> None:
     # 2️⃣ Фильтр по статусу
     status = get_status_menu()
     filtered: List[Dict[str, Any]] = [
-        tx for tx in transactions if tx.get('state', '').upper() == status
+        tx for tx in transactions if str(tx.get('state', '')).strip().upper() == status.upper()
     ]
     print(f'Операции отфильтрованы по статусу "{status}" ({len(filtered)} найдено)')
 

@@ -1,23 +1,25 @@
+from typing import Any
+
 from .masks import get_mask_account, get_mask_card_number
 
 
-def mask_account_card(info: str) -> str:
-    """Функция, которая маскирует номер карты и счета."""
-    if len(info.strip().split()) == 0:  # ← "Есть коробки?"
-        return "—"
-    parts = info.split()
-    return get_mask_card_number(parts[-1])
+def mask_account_card(info: Any) -> str:
+    """Маскировка карты/счета с защитой от pandas NaN."""
+    info_str = str(info).strip() if info is not None else ""
 
-    type_name = " ".join(parts[:-1])
+    if len(info_str.split()) == 0:  # ✅ info_str!
+        return "—"
+
+    parts = info_str.split()  # ✅ info_str!
+    type_name = " ".join(parts[:-1]).strip()
+    last_part = parts[-1]
 
     if type_name.lower().startswith("счет"):
-
-        masked_number = get_mask_account(info)
-
+        masked_number = get_mask_account(last_part)
     else:
-        masked_number = get_mask_card_number(info)
+        masked_number = get_mask_card_number(last_part)
 
-    return f"{type_name} {masked_number}"
+    return f"{type_name} {masked_number}".strip()
 
 
 def get_date(date_str: str) -> str:

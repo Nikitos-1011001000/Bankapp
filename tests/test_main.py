@@ -1,8 +1,9 @@
 import os
 import sys
 from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
+import pandas as pd
 import pytest
 
 import main
@@ -104,18 +105,33 @@ def test_load_csv(mocker):
 
 
 def test_load_xlsx(mocker):
-    """Mock XLSX загрузка."""
-    mock_wb = MagicMock()
-    mock_ws = MagicMock()
-    mock_ws.active = mock_ws
-    mock_ws[1] = [MagicMock(value='id'), MagicMock(value='state')]
-    mock_ws.iter_rows.return_value = [('1', 'EXECUTED')]
+    """Mock pandas XLSX загрузка - реальный сценарий."""
+    # Mock DataFrame с реальными данными
+    mock_df = pd.DataFrame([
+        {
+            "id": "650703",
+            "state": "EXECUTED",
+            "date": "2023-09-05T11:30:32Z",
+            "amount": "16210",
+            "currency_name": "Sol",
+            "currency_code": "PEN",
+            "from": "Счет 58803664561298323391",
+            "to": "Счет 39745660563456619397",
+            "description": "Перевод организации"
+        }
+    ])
 
-    mocker.patch('openpyxl.load_workbook', return_value=mock_wb)
-    mocker.patch.object(mock_wb, 'active', mock_ws)
+    # Mock pandas.read_excel
+    mocker.patch('pandas.read_excel', return_value=mock_df)
 
+    # Вызываем функцию
     result = main.load_xlsx("fake.xlsx")
+
+    # Проверяем результат нормализации
     assert len(result) == 1
+    assert result[0]["state"] == "EXECUTED"
+    assert result[0]["operationAmount"]["currency"]["code"] == "PEN"
+    assert result[0]["from"] == "Счет 58803664561298323391"
 
 
 def get_last_transactions(transactions: list[dict], count: int = 5) -> list[dict]:
