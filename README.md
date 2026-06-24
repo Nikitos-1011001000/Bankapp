@@ -24,7 +24,7 @@
 Чтобы использовать этот виджет в своём проекте, выполните следующие шаги:
 
 1. Скачайте виджет с нашего репозитория на GitHub:
-   - Перейдите на страницу репозитория https://github.com/Nikitos-create/Bankapp
+   - Перейдите на страницу репозитория https://github.com/Nikitos-1011001000/Bankapp
    - Нажмите кнопку **Code** > **Download ZIP** или клонируйте репозиторий командой:
      
      git clone https://github.com/Nikitos-create/Bankapp
